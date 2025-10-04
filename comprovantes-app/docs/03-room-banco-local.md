@@ -35,3 +35,28 @@ data class ReceiptEntity(
     val imageLocalUri: String?,
     val synced: Boolean
 )
+
+## 💾 Exemplo de DAO
+@Dao
+interface ReceiptDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(receipt: ReceiptEntity)
+
+    @Query("SELECT * FROM receipts WHERE householdId = :householdId ORDER BY paymentDateMillis DESC")
+    fun receiptsByHousehold(householdId: String): Flow<List<ReceiptEntity>>
+}
+
+🧠 Boas práticas
+
+Sempre usar Flow para listas observáveis.
+Evitar acessos diretos ao banco na UI.
+Testar com dados falsos antes da integração com Firebase.
+✅ Resultado esperado
+O app consegue:
+Salvar comprovantes localmente
+Exibir lista offline
+Atualizar auomaticamente na UI (graças ao Flow)
+
+
+
+
